@@ -6,6 +6,9 @@ import menuRoutes from './routes/menu';
 import cartRoutes from './routes/cart';
 import orderRoutes from './routes/order';
 
+import globalErrorHandler from './app/middleware/globalErrorHandler';
+import notFound from './app/middleware/notFound';
+
 const app: Application = express();
 
 app.use(cors());
@@ -27,5 +30,9 @@ app.get('/', (req: Request, res: Response) => {
 app.use('/api/menu', menuRoutes);
 app.use('/api/cart', cartRoutes);
 app.use('/api/order', orderRoutes);
+
+// Error Middlewares
+app.use(globalErrorHandler);
+app.use(notFound);
 
 export default app;
