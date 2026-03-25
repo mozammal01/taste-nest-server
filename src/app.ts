@@ -5,9 +5,21 @@ import { auth } from "./lib/auth";
 import router from './app/routes';
 import globalErrorHandler from './app/middleware/globalErrorHandler';
 import notFound from './app/middleware/notFound';
+import helmet from 'helmet';
+import { rateLimit } from 'express-rate-limit';
 
 const app: Application = express();
 
+const limiter = rateLimit({
+	windowMs: 15 * 60 * 1000, // 15 minutes
+	limit: 100, // Limit each IP to 100 requests per `window` (here, per 15 minutes).
+	standardHeaders: 'draft-7', 
+	legacyHeaders: false, 
+    message: "Too many requests from this IP, please try again after 15 minutes"
+});
+
+app.use(helmet());
+app.use(limiter);
 app.use(cors());
 app.use(express.json());
 
