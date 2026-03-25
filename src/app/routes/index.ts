@@ -1,7 +1,7 @@
 import { Router } from "express";
 import { MenuRoutes } from "../module/menu/menu.routes";
 import { CartRoutes } from "../module/cart/cart.routes";
-import orderRoutes from "../../routes/order"; // Still using the basic one in src/routes/order.ts temporarily
+import { OrderRoutes } from "../module/order/order.routes";
 
 const router = Router();
 
@@ -16,7 +16,7 @@ const moduleRoutes = [
     },
     {
         path: "/order",
-        route: orderRoutes
+        route: OrderRoutes
     }
 ];
 
