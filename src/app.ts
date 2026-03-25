@@ -2,10 +2,7 @@ import express, { Application, Request, Response } from 'express';
 import cors from 'cors';
 import { toNodeHandler } from "better-auth/node";
 import { auth } from "./lib/auth";
-import { MenuRoutes } from './app/module/menu/menu.routes';
-import cartRoutes from './routes/cart';
-import orderRoutes from './routes/order';
-
+import router from './app/routes';
 import globalErrorHandler from './app/middleware/globalErrorHandler';
 import notFound from './app/middleware/notFound';
 
@@ -26,10 +23,8 @@ app.get('/', (req: Request, res: Response) => {
     });
 });
 
-// Temporary Route Setup (Moving to modular aggregator in next steps)
-app.use('/api/menu', MenuRoutes);
-app.use('/api/cart', cartRoutes);
-app.use('/api/order', orderRoutes);
+// API Routes
+app.use('/api/v1', router);
 
 // Error Middlewares
 app.use(globalErrorHandler);
