@@ -7,15 +7,59 @@ const createMenuItem = async (payload: any) => {
     return result;
 }
 
-const getAllMenuItems = async (query: Record<string, any>) => {
-    const { category } = query;
-    const whereClause = category ? { category: category as string } : {};
-    
+const getAllMenuItems = async (filters: any, options: any) => {
+    const { searchTerm, ...filterData } = filters;
+    const { page = 1, limit = 10, sortBy = 'createdAt', sortOrder = 'desc' } = options;
+
+    const skip = (Number(page) - 1) * Number(limit);
+    const take = Number(limit);
+
+    const andConditions = [];
+
+    if (searchTerm) {
+        andConditions.push({
+            OR: ['name', 'category'].map(field => ({
+                [field]: {
+                    contains: searchTerm,
+                    mode: 'insensitive'
+                }
+            }))
+        });
+    }
+
+    if (Object.keys(filterData).length > 0) {
+        andConditions.push({
+            AND: Object.keys(filterData).map(key => ({
+                [key]: {
+                    equals: (filterData as any)[key]
+                }
+            }))
+        });
+    }
+
+    const whereConditions = andConditions.length > 0 ? { AND: andConditions } : {};
+
     const result = await prisma.menuItem.findMany({
-        where: whereClause,
-        orderBy: { createdAt: 'desc' }
+        where: whereConditions,
+        skip,
+        take,
+        orderBy: {
+            [sortBy as string]: sortOrder
+        }
     });
-    return result;
+
+    const total = await prisma.menuItem.count({
+        where: whereConditions
+    });
+
+    return {
+        meta: {
+            page: Number(page),
+            limit: Number(limit),
+            total
+        },
+        data: result
+    };
 }
 
 const getCategories = async () => {

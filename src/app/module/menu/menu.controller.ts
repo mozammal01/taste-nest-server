@@ -3,6 +3,9 @@ import catchAsync from "../../utils/catchAsync";
 import sendResponse from "../../utils/sendResponse";
 import { MenuService } from "./menu.service";
 
+import pick from "../../utils/pick";
+import { paginationFields } from "../../constants/pagination";
+
 const createMenuItem = catchAsync(async (req, res) => {
     const result = await MenuService.createMenuItem(req.body);
     sendResponse(res, {
@@ -14,12 +17,16 @@ const createMenuItem = catchAsync(async (req, res) => {
 });
 
 const getAllMenuItems = catchAsync(async (req, res) => {
-    const result = await MenuService.getAllMenuItems(req.query);
+    const filters = pick(req.query, ["searchTerm", "category", "freeDelivery"]);
+    const options = pick(req.query, paginationFields);
+
+    const result = await MenuService.getAllMenuItems(filters, options);
     sendResponse(res, {
         statusCode: 200,
         success: true,
         message: 'Menu items fetched successfully',
-        data: result
+        meta: result.meta,
+        data: result.data
     });
 });
 
