@@ -3,14 +3,14 @@ import { z } from "zod";
 const createMenuItemValidationSchema = z.object({
   body: z.object({
     name: z.string({
-      required_error: "Name is required",
+      message: "Name is required",
     }),
     content: z.string().optional(),
     category: z.string({
-      required_error: "Category is required",
+      message: "Category is required",
     }),
     price: z.number({
-      required_error: "Price is required",
+      message: "Price is required",
     }),
     image: z.string().optional(),
     discount: z.string().optional(),
