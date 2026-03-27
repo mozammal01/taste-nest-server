@@ -28,7 +28,8 @@ app.use(
 );
 app.use(express.json());
 
-// Auth Route
+// Auth Route — use standard Express wildcard (*) so better-auth
+// receives the full original URL path for internal routing.
 app.all("/api/auth/*", toNodeHandler(auth));
 
 // Health Check

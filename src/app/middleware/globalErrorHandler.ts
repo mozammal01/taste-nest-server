@@ -4,6 +4,7 @@ import { Prisma } from '@prisma/client';
 import handleZodError from '../errorHelpers/handleZodError';
 import handlePrismaError from '../errorHelpers/handlePrismaError';
 import { TErrorSources } from '../interfaces/error';
+import AppError from '../errorHelpers/AppError';
 
 const globalErrorHandler = (
   err: any,
@@ -30,6 +31,15 @@ const globalErrorHandler = (
     statusCode = simplifiedError?.statusCode;
     message = simplifiedError?.message;
     errorSources = simplifiedError?.errorSources;
+  } else if (err instanceof AppError) {
+    statusCode = err?.statusCode;
+    message = err?.message;
+    errorSources = [
+      {
+        path: '',
+        message: err?.message,
+      },
+    ];
   } else if (err instanceof Error) {
     message = err?.message;
     errorSources = [
