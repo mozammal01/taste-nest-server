@@ -20,7 +20,12 @@ const limiter = rateLimit({
 
 app.use(helmet());
 app.use(limiter);
-app.use(cors());
+app.use(
+  cors({
+    origin: process.env.CLIENT_URL || "http://localhost:3000",
+    credentials: true,
+  })
+);
 app.use(express.json());
 
 // Auth Route
