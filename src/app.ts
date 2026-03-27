@@ -12,7 +12,7 @@ const app: Application = express();
 
 const limiter = rateLimit({
 	windowMs: 15 * 60 * 1000, // 15 minutes
-	limit: 100, // Limit each IP to 100 requests per `window` (here, per 15 minutes).
+	limit: 1000, // Increased limit for development/heavy usage
 	standardHeaders: 'draft-7', 
 	legacyHeaders: false, 
     message: "Too many requests from this IP, please try again after 15 minutes"
@@ -28,9 +28,13 @@ app.use(
 );
 app.use(express.json());
 
-// Auth Route — use standard Express wildcard (*) so better-auth
-// receives the full original URL path for internal routing.
-app.all("/api/auth/*", toNodeHandler(auth));
+// Better Auth Route with error logging
+app.use("/api/auth", (req, res, next) => {
+    toNodeHandler(auth)(req, res).catch((err) => {
+        console.error("BETTER AUTH ERROR:", err);
+        next(err);
+    });
+});
 
 // Health Check
 app.get('/', (req: Request, res: Response) => {

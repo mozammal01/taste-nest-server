@@ -1,25 +1,49 @@
 import prisma from "../../../lib/prisma";
 
-const createOrder = async (userId: string, payload: any) => {
-    // Basic order creation
-    // In a real app, we might calculate total price here or fetch from cart
-    const result = await prisma.order.create({
-        data: {
-            userId,
-            menuItemId: payload.menuItemId,
-            quantity: payload.quantity,
-            totalPrice: payload.totalPrice,
-            status: 'pending'
-        }
-    });
+const createOrder = async (userId: string, payload: { items: any[], address: string, phone: string, totalAmount: number, transactionId?: string, paymentStatus?: string }) => {
+    // 1. Start Transaction
+    return await prisma.$transaction(async (tx) => {
+        // 2. Create the Order
+        const order = await tx.order.create({
+            data: {
+                userId,
+                totalAmount: payload.totalAmount,
+                address: payload.address,
+                phone: payload.phone,
+                transactionId: payload.transactionId,
+                paymentStatus: payload.paymentStatus || 'unpaid',
+                items: {
+                    create: payload.items.map(item => ({
+                        menuItemId: item.menuItemId,
+                        quantity: item.quantity,
+                        price: item.price
+                    }))
+                }
+            },
+            include: {
+                items: true
+            }
+        });
 
-    // Optionally clear cart after order if implemented from cart
-    return result;
+        // 3. Clear the user's cart after placing the order
+        await tx.cart.deleteMany({
+            where: { userId }
+        });
+
+        return order;
+    });
 }
 
 const getMyOrders = async (userId: string) => {
     const result = await prisma.order.findMany({
       where: { userId },
+      include: {
+        items: {
+          include: {
+            menuItem: true
+          }
+        }
+      },
       orderBy: { createdAt: 'desc' }
     });
     return result;
@@ -27,6 +51,14 @@ const getMyOrders = async (userId: string) => {
 
 const getAllOrders = async () => {
     const result = await prisma.order.findMany({
+        include: {
+            user: true,
+            items: {
+                include: {
+                    menuItem: true
+                }
+            }
+        },
         orderBy: { createdAt: 'desc' }
     });
     return result;

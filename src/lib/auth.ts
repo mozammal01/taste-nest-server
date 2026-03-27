@@ -11,6 +11,9 @@ export const auth = betterAuth({
     emailAndPassword: {
         enabled: true,
     },
+    baseURL: process.env.BETTER_AUTH_URL,
+    secret: process.env.BETTER_AUTH_SECRET,
+    trustedOrigins: [process.env.CLIENT_URL || "http://localhost:3000"],
     plugins: [
         emailOTP({
             async sendVerificationOTP({ email, otp, type }) {

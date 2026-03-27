@@ -2,15 +2,20 @@ import { z } from "zod";
 
 const createOrderValidationSchema = z.object({
   body: z.object({
-    menuItemId: z.number({
-      message: "Menu Item ID is required",
+    items: z.array(z.object({
+        menuItemId: z.number(),
+        quantity: z.number().min(1),
+        price: z.number()
+    })).min(1, "At least one item is required"),
+    totalAmount: z.number({
+      message: "Total amount is required",
     }),
-    quantity: z.number({
-      message: "Quantity is required",
-    }).min(1, "Quantity must be at least 1"),
-    totalPrice: z.number({
-      message: "Total price is required",
+    address: z.string({
+        message: "Delivery address is required",
     }),
+    phone: z.string({
+        message: "Phone number is required",
+    })
   }),
 });
 

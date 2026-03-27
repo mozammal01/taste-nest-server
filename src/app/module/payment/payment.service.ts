@@ -1,7 +1,8 @@
-import Stripe from 'stripe';
 import dotenv from 'dotenv';
-import AppError from '../../errorHelpers/AppError';
 dotenv.config();
+
+import Stripe from 'stripe';
+import AppError from '../../errorHelpers/AppError';
 
 const getStripeClient = () => {
   const stripeSecretKey = process.env.STRIPE_SECRET_KEY;
@@ -9,9 +10,7 @@ const getStripeClient = () => {
     throw new AppError(500, "Stripe is not configured. Please set STRIPE_SECRET_KEY.");
   }
 
-  return new Stripe(stripeSecretKey, {
-    apiVersion: '2025-02-24-preview' as any,
-  });
+  return new Stripe(stripeSecretKey);
 };
 
 const createPaymentIntent = async (amount: number) => {

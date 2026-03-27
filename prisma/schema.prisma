@@ -28,6 +28,7 @@ model User {
   banExpires    DateTime?
   sessions      Session[]
   accounts      Account[]
+  orders        Order[]
 
   @@map("user")
 }
@@ -62,6 +63,8 @@ model Account {
   createdAt             DateTime
   updatedAt             DateTime
 
+
+  @@unique([providerId, accountId])
   @@map("account")
 }
 
@@ -86,6 +89,7 @@ model MenuItem {
   discount     String?
   freeDelivery Boolean  @default(false)
   createdAt    DateTime @default(now())
+  orderItems   OrderItem[]
 
   @@map("menu_item")
 }
@@ -100,13 +104,32 @@ model Cart {
 }
 
 model Order {
+  id          Int         @id @default(autoincrement())
+  userId      String
+  user        User        @relation(fields: [userId], references: [id])
+  items       OrderItem[]
+  totalAmount Float
+  address     String
+  phone       String?
+  status      String      @default("pending")
+  paymentStatus String    @default("unpaid")
+  transactionId String?
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+
+  @@map("order")
+}
+
+model OrderItem {
   id         Int      @id @default(autoincrement())
-  userId     String
+  orderId    Int
+  order      Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
   menuItemId Int
+  menuItem   MenuItem @relation(fields: [menuItemId], references: [id])
   quantity   Int
-  totalPrice Float
-  status     String   @default("pending")
+  price      Float
   createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
+
+  @@map("order_item")
 }
 
