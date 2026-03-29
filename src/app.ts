@@ -26,20 +26,21 @@ app.use(
     credentials: true,
   })
 );
-app.use(express.json());
-
-// Better Auth Route with error logging
-app.use("/api/auth", (req, res, next) => {
+// Better Auth Route (Registered BEFORE JSON parser to avoid issues with body parsing in social/POST requests)
+app.all("/api/auth/*", (req, res, next) => {
+    console.log(`[auth]: Incoming request ${req.method} ${req.url}`);
     toNodeHandler(auth)(req, res).catch((err) => {
         console.error("BETTER AUTH ERROR:", err);
         next(err);
     });
 });
 
+app.use(express.json());
+
 // Health Check
 app.get('/', (req: Request, res: Response) => {
     res.json({
-        message: 'Welcome to TasteNest API Service!',
+        message: 'TasteNest API is active and running!',
         status: 'healthy',
         timestamp: new Date().toISOString()
     });

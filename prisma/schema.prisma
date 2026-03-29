@@ -144,6 +144,8 @@ model Reservation {
   date      String
   time      String
   guests    Int
+  phone     String
+  occasion  String?
   status    String   @default("pending") // pending, confirmed, cancelled
   message   String?
   createdAt DateTime @default(now())

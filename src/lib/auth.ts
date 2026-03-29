@@ -4,6 +4,8 @@ import { emailOTP } from "better-auth/plugins";
 import prisma from "./prisma";
 import { sendPasswordResetOtpEmail } from "../app/utils/mailer";
 
+console.log("[auth]: Initializing with baseURL:", process.env.BETTER_AUTH_URL);
+
 export const auth = betterAuth({
     database: prismaAdapter(prisma, {
         provider: "postgresql",

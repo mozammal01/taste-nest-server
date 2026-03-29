@@ -157,10 +157,60 @@ async function main() {
     }
   ];
 
-  console.log('Seeding menu items...');
+  console.log('Seeding admin user...');
 
-  // Clean existing menu items first for fresh seeding
+  // Create an admin user if it doesn't exist
+  const adminEmail = "admin@tastenest.com";
+  const existingAdmin = await prisma.user.findUnique({
+    where: { email: adminEmail }
+  });
+
+  if (!existingAdmin) {
+    const adminId = "admin-user-id-001";
+    // Pre-hashed password for "admin123" (using bcrypt standard)
+    const hashedPassword = "$2a$10$7zB/Aks/u6h7yR6ZkGzEiu8R5Yh6K7X.4.XwF9H1R.U0E3uVv7mK6"; 
+
+    await prisma.user.create({
+      data: {
+        id: adminId,
+        name: "Admin User",
+        email: adminEmail,
+        emailVerified: true,
+        role: "admin",
+        createdAt: new Date(),
+        updatedAt: new Date(),
+        accounts: {
+          create: {
+            id: "admin-account-id-001",
+            accountId: adminId,
+            providerId: "email",
+            password: hashedPassword,
+            createdAt: new Date(),
+            updatedAt: new Date(),
+          }
+        }
+      }
+    });
+    console.log('Admin user created successfully!');
+  } else {
+    // If user exists, make sure they are admin
+    await prisma.user.update({
+      where: { email: adminEmail },
+      data: { role: "admin" }
+    });
+    console.log('Admin user updated to admin role.');
+  }
+
+  console.log('Cleaning existing data...');
+  // Clean related tables in the correct order to avoid foreign key constraints
+  await prisma.orderItem.deleteMany();
+  await prisma.payment.deleteMany();
+  await prisma.order.deleteMany();
+  await prisma.cart.deleteMany();
+  await prisma.favorite.deleteMany();
   await prisma.menuItem.deleteMany();
+  await prisma.reservation.deleteMany();
+  await prisma.reward.deleteMany();
 
   // Create many works much better than looping and trying to upsert without a unique field.
   const result = await prisma.menuItem.createMany({

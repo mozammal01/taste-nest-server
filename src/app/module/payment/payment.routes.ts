@@ -11,5 +11,6 @@ router.post(
 );
 
 router.get("/my-payments", auth("user", "admin"), PaymentController.getMyPayments);
+router.get("/", auth("admin"), PaymentController.getAllPayments);
 
 export const PaymentRoutes = router;

@@ -25,7 +25,18 @@ const getMyPayments = catchAsync(async (req, res) => {
   });
 });
 
+const getAllPayments = catchAsync(async (req, res) => {
+  const result = await PaymentService.getAllPayments();
+  sendResponse(res, {
+    statusCode: 200,
+    success: true,
+    message: "All payments fetched successfully",
+    data: result,
+  });
+});
+
 export const PaymentController = {
     createPaymentIntent,
     getMyPayments,
+    getAllPayments,
 }

@@ -37,6 +37,25 @@ const getMyPayments = async (userId: string) => {
     orderBy: {
       createdAt: "desc",
     },
+    include: {
+      order: true
+    }
+  });
+  return result;
+};
+
+const getAllPayments = async () => {
+  const result = await prisma.payment.findMany({
+    include: {
+      order: {
+        include: {
+          user: true
+        }
+      }
+    },
+    orderBy: {
+      createdAt: "desc",
+    },
   });
   return result;
 };
@@ -44,4 +63,5 @@ const getMyPayments = async (userId: string) => {
 export const PaymentService = {
   createPaymentIntent,
   getMyPayments,
+  getAllPayments
 };
