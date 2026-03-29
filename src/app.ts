@@ -22,7 +22,7 @@ app.use(helmet());
 app.use(limiter);
 app.use(
   cors({
-    origin: process.env.CLIENT_URL || "http://localhost:3000",
+    origin: [process.env.CLIENT_URL || "http://localhost:3000", "http://localhost:3001", "http://localhost:3002"],
     credentials: true,
   })
 );

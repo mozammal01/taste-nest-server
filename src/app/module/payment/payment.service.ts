@@ -3,6 +3,7 @@ dotenv.config();
 
 import Stripe from 'stripe';
 import AppError from '../../errorHelpers/AppError';
+import prisma from '../../../lib/prisma';
 
 const getStripeClient = () => {
   const stripeSecretKey = process.env.STRIPE_SECRET_KEY;
@@ -26,6 +27,21 @@ const createPaymentIntent = async (amount: number) => {
   };
 };
 
+const getMyPayments = async (userId: string) => {
+  const result = await prisma.payment.findMany({
+    where: {
+      order: {
+        userId: userId,
+      },
+    },
+    orderBy: {
+      createdAt: "desc",
+    },
+  });
+  return result;
+};
+
 export const PaymentService = {
   createPaymentIntent,
+  getMyPayments,
 };

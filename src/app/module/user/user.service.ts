@@ -2,7 +2,18 @@ import prisma from "../../../lib/prisma";
 
 const getMyProfile = async (id: string) => {
     const result = await prisma.user.findUnique({
-        where: { id }
+        where: { id },
+        include: {
+            _count: {
+                select: {
+                    orders: true,
+                    reservations: true,
+                    favorites: true,
+                    rewards: true
+                }
+            },
+            rewards: true
+        }
     });
     return result;
 }

@@ -10,4 +10,6 @@ router.post(
     PaymentController.createPaymentIntent
 );
 
+router.get("/my-payments", auth("user", "admin"), PaymentController.getMyPayments);
+
 export const PaymentRoutes = router;

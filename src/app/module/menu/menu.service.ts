@@ -9,7 +9,7 @@ const createMenuItem = async (payload: any) => {
 
 const getAllMenuItems = async (filters: any, options: any) => {
     const { searchTerm, ...filterData } = filters;
-    const { page = 1, limit = 10, sortBy = 'createdAt', sortOrder = 'desc' } = options;
+    const { page = 1, limit = 100, sortBy = 'createdAt', sortOrder = 'desc' } = options;
 
     const skip = (Number(page) - 1) * Number(limit);
     const take = Number(limit);

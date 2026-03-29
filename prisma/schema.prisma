@@ -15,20 +15,23 @@ datasource db {
 
 // User model for authentication
 model User {
-  id            String    @id
+  id            String        @id
   name          String
-  email         String    @unique
+  email         String        @unique
   emailVerified Boolean
   image         String?
   createdAt     DateTime
   updatedAt     DateTime
-  role          String?   @default("user")
+  role          String?       @default("user")
   banned        Boolean?
   banReason     String?
   banExpires    DateTime?
   sessions      Session[]
   accounts      Account[]
   orders        Order[]
+  reservations  Reservation[]
+  favorites     Favorite[]
+  rewards       Reward[]
 
   @@map("user")
 }
@@ -52,7 +55,7 @@ model Account {
   accountId             String
   providerId            String
   userId                String
-  user                  User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user                  User      @relation(fields: [userId], references: [id], onDelete: Cascade)
   accessToken           String?
   refreshToken          String?
   idToken               String?
@@ -62,7 +65,6 @@ model Account {
   password              String?
   createdAt             DateTime
   updatedAt             DateTime
-
 
   @@unique([providerId, accountId])
   @@map("account")
@@ -80,16 +82,17 @@ model Verification {
 }
 
 model MenuItem {
-  id           Int      @id @default(autoincrement())
+  id           Int         @id @default(autoincrement())
   name         String
   content      String?
   category     String
-  price        Decimal  @db.Decimal(10, 2)
+  price        Decimal     @db.Decimal(10, 2)
   image        String?
   discount     String?
-  freeDelivery Boolean  @default(false)
-  createdAt    DateTime @default(now())
+  freeDelivery Boolean     @default(false)
+  createdAt    DateTime    @default(now())
   orderItems   OrderItem[]
+  favorites    Favorite[]
 
   @@map("menu_item")
 }
@@ -104,18 +107,19 @@ model Cart {
 }
 
 model Order {
-  id          Int         @id @default(autoincrement())
-  userId      String
-  user        User        @relation(fields: [userId], references: [id])
-  items       OrderItem[]
-  totalAmount Float
-  address     String
-  phone       String?
-  status      String      @default("pending")
-  paymentStatus String    @default("unpaid")
+  id            Int         @id @default(autoincrement())
+  userId        String
+  user          User        @relation(fields: [userId], references: [id])
+  items         OrderItem[]
+  totalAmount   Float
+  address       String
+  phone         String?
+  status        String      @default("pending")
+  paymentStatus String      @default("unpaid")
   transactionId String?
-  createdAt   DateTime    @default(now())
-  updatedAt   DateTime    @updatedAt
+  payment       Payment?
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
 
   @@map("order")
 }
@@ -133,3 +137,55 @@ model OrderItem {
   @@map("order_item")
 }
 
+model Reservation {
+  id        Int      @id @default(autoincrement())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  date      String
+  time      String
+  guests    Int
+  status    String   @default("pending") // pending, confirmed, cancelled
+  message   String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("reservation")
+}
+
+model Favorite {
+  id         Int      @id @default(autoincrement())
+  userId     String
+  user       User     @relation(fields: [userId], references: [id])
+  menuItemId Int
+  menuItem   MenuItem @relation(fields: [menuItemId], references: [id])
+  createdAt  DateTime @default(now())
+
+  @@unique([userId, menuItemId])
+  @@map("favorite")
+}
+
+model Reward {
+  id          Int      @id @default(autoincrement())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id])
+  points      Int
+  description String
+  type        String // earn, redeem
+  createdAt   DateTime @default(now())
+
+  @@map("reward")
+}
+
+model Payment {
+  id            Int      @id @default(autoincrement())
+  orderId       Int      @unique
+  order         Order    @relation(fields: [orderId], references: [id])
+  amount        Float
+  currency      String   @default("usd")
+  status        String
+  transactionId String?
+  paymentMethod String?
+  createdAt     DateTime @default(now())
+
+  @@map("payment")
+}

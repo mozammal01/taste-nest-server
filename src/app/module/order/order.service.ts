@@ -25,7 +25,20 @@ const createOrder = async (userId: string, payload: { items: any[], address: str
             }
         });
 
-        // 3. Clear the user's cart after placing the order
+        // 3. Create a Payment record if it's already paid (e.g. via Stripe)
+        if (payload.transactionId) {
+            await tx.payment.create({
+                data: {
+                    orderId: order.id,
+                    amount: payload.totalAmount,
+                    status: 'succeeded',
+                    transactionId: payload.transactionId,
+                    paymentMethod: 'card'
+                }
+            });
+        }
+
+        // 4. Clear the user's cart after placing the order
         await tx.cart.deleteMany({
             where: { userId }
         });

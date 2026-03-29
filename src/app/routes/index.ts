@@ -7,6 +7,9 @@ import { UserRoutes } from "../module/user/user.routes";
 import { PaymentRoutes } from "../module/payment/payment.routes";
 import { AdminRoutes } from "../module/admin/admin.routes";
 import { UploadRoutes } from "../module/upload/upload.routes";
+import { ReservationRoutes } from "../module/reservation/reservation.routes";
+import { FavoriteRoutes } from "../module/favorite/favorite.routes";
+import { RewardRoutes } from "../module/reward/reward.routes";
 
 const router = Router();
 
@@ -38,6 +41,18 @@ const moduleRoutes = [
     {
         path: "/upload",
         route: UploadRoutes
+    },
+    {
+        path: "/reservation",
+        route: ReservationRoutes
+    },
+    {
+        path: "/favorite",
+        route: FavoriteRoutes
+    },
+    {
+        path: "/reward",
+        route: RewardRoutes
     }
 ];
 

@@ -14,6 +14,18 @@ const createPaymentIntent = catchAsync(async (req, res) => {
     });
 });
 
+const getMyPayments = catchAsync(async (req, res) => {
+  const user = (req as any).user;
+  const result = await PaymentService.getMyPayments(user.id);
+  sendResponse(res, {
+    statusCode: 200,
+    success: true,
+    message: "Payment history fetched successfully",
+    data: result,
+  });
+});
+
 export const PaymentController = {
-    createPaymentIntent
+    createPaymentIntent,
+    getMyPayments,
 }
