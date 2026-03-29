@@ -26,6 +26,21 @@ const updateMyProfile = async (id: string, payload: any) => {
     return result;
 }
 
+const updateUser = async (id: string, payload: any) => {
+    const result = await prisma.user.update({
+        where: { id },
+        data: payload
+    });
+    return result;
+}
+
+const deleteUser = async (id: string) => {
+    const result = await prisma.user.delete({
+        where: { id }
+    });
+    return result;
+}
+
 const getAllUsers = async (filters: any, options: any) => {
     const { searchTerm, role } = filters;
     const { page = 1, limit = 10, sortBy = 'createdAt', sortOrder = 'desc' } = options;
@@ -80,5 +95,7 @@ const getAllUsers = async (filters: any, options: any) => {
 export const UserService = {
     getMyProfile,
     updateMyProfile,
-    getAllUsers
+    getAllUsers,
+    updateUser,
+    deleteUser
 }
