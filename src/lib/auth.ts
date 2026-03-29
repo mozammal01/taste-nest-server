@@ -2,7 +2,7 @@ import { betterAuth } from "better-auth";
 import { prismaAdapter } from "better-auth/adapters/prisma";
 import { emailOTP } from "better-auth/plugins";
 import prisma from "./prisma";
-import { sendPasswordResetOtpEmail } from "../app/utils/mailer";
+import { sendPasswordResetOtpEmail, sendEmailVerificationOtpEmail } from "../app/utils/mailer";
 
 console.log("[auth]: Initializing with baseURL:", process.env.BETTER_AUTH_URL);
 
@@ -12,6 +12,7 @@ export const auth = betterAuth({
     }),
     emailAndPassword: {
         enabled: true,
+        requireEmailVerification: true,
     },
     baseURL: process.env.BETTER_AUTH_URL,
     secret: process.env.BETTER_AUTH_SECRET,
@@ -23,15 +24,12 @@ export const auth = betterAuth({
     plugins: [
         emailOTP({
             async sendVerificationOTP({ email, otp, type }) {
-                // type: "sign-in" | "email-verification" | "forget-password"
-                if (type === "forget-password") {
+                console.log(`[auth]: Triggering ${type} OTP for ${email}`);
+                if (type === "email-verification" || type === "sign-in") {
+                    await sendEmailVerificationOtpEmail({ to: email, otp });
+                } else if (type === "forget-password") {
                     await sendPasswordResetOtpEmail({ to: email, otp });
-                    return;
                 }
-
-                // For now we only use OTP for password reset in this project.
-                // You can extend this later for sign-in / email verification.
-                await sendPasswordResetOtpEmail({ to: email, otp });
             },
         }),
     ],
