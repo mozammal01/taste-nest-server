@@ -22,9 +22,9 @@ export const auth = betterAuth({
     trustedOrigins: [
         "http://localhost:3000",
         "http://localhost:3001",
-        "http://localhost:3002",
-        "https://taste-nest-restaurent.vercel.app",
-        process.env.CLIENT_URL || "http://localhost:3000"
+        "https://taste-next-restaurant.vercel.app", // Correct spelling & domain from user's URL
+        "https://taste-nest-restaurent.vercel.app", // Keeping old one just in case
+        process.env.CLIENT_URL || ""
     ].filter(Boolean),
     plugins: [
         emailOTP({
