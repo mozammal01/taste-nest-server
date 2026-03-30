@@ -12,6 +12,9 @@ const app: Application = express();
 
 app.set('trust proxy', 1);
 
+// Diagnostic logging for Vercel cold starts
+console.log("[server]: Initializing TasteNest Engine...");
+
 const limiter = rateLimit({
 	windowMs: 15 * 60 * 1000, // 15 minutes
 	limit: 1000, // Increased limit for development/heavy usage
@@ -20,7 +23,10 @@ const limiter = rateLimit({
     message: "Too many requests from this IP, please try again after 15 minutes"
 });
 
-app.use(helmet());
+app.use(helmet({
+    contentSecurityPolicy: false, // Relax for cross-origin if needed
+    crossOriginResourcePolicy: { policy: "cross-origin" }
+}));
 app.use(limiter);
 app.use(
   cors({
