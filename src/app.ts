@@ -33,8 +33,8 @@ app.use(
     origin: [
         "http://localhost:3000",
         "http://localhost:3001",
-        "http://localhost:3002",
-        "https://taste-nest-restaurent.vercel.app",
+        "https://taste-next-restaurant.vercel.app", // Correct spelling & domain
+        "https://taste-nest-restaurent.vercel.app", // Original misspelled one
         process.env.CLIENT_URL as string
     ].filter(Boolean),
     credentials: true,
