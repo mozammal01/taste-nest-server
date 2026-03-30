@@ -19,11 +19,15 @@ export const auth = betterAuth({
     },
     baseURL: process.env.BETTER_AUTH_URL,
     secret: process.env.BETTER_AUTH_SECRET,
+    advanced: {
+        useSecureCookies: true,
+        crossSourced: true,
+    },
     trustedOrigins: [
         "http://localhost:3000",
         "http://localhost:3001",
-        "https://taste-next-restaurant.vercel.app", // Correct spelling & domain from user's URL
-        "https://taste-nest-restaurent.vercel.app", // Keeping old one just in case
+        "https://taste-nest-restaurent.vercel.app", // Match exactly user's provided link
+        "https://taste-next-restaurant.vercel.app", 
         process.env.CLIENT_URL || ""
     ].filter(Boolean),
     plugins: [
