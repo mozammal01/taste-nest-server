@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
-import { ReservationService } from "./reservation.service";
-import catchAsync from "../../utils/catchAsync";
-import sendResponse from "../../utils/sendResponse";
+import { ReservationService } from "./reservation.service.js";
+import catchAsync from "../../utils/catchAsync.js";
+import sendResponse from "../../utils/sendResponse.js";
 
 const createReservation = catchAsync(async (req: Request, res: Response) => {
     const user = (req as any).user;

@@ -1,4 +1,4 @@
-import prisma from "../../../lib/prisma";
+import prisma from "../../../lib/prisma.js";
 
 const createMenuItem = async (payload: any) => {
     const result = await prisma.menuItem.create({

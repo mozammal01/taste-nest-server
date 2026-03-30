@@ -1,10 +1,10 @@
 import { Request, Response } from "express";
-import catchAsync from "../../utils/catchAsync";
-import sendResponse from "../../utils/sendResponse";
-import { MenuService } from "./menu.service";
+import catchAsync from "../../utils/catchAsync.js";
+import sendResponse from "../../utils/sendResponse.js";
+import { MenuService } from "./menu.service.js";
 
-import pick from "../../utils/pick";
-import { paginationFields } from "../../constants/pagination";
+import pick from "../../utils/pick.js";
+import { paginationFields } from "../../constants/pagination.js";
 
 const createMenuItem = catchAsync(async (req, res) => {
     const result = await MenuService.createMenuItem(req.body);

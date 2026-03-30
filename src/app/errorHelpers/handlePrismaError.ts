@@ -1,5 +1,5 @@
 import { Prisma } from '@prisma/client';
-import { TErrorSources, TGenericErrorResponse } from '../interfaces/error';
+import { TErrorSources, TGenericErrorResponse } from '../interfaces/error.js';
 
 const handlePrismaError = (
   err: Prisma.PrismaClientKnownRequestError

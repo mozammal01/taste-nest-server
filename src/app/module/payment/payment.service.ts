@@ -2,8 +2,8 @@ import dotenv from 'dotenv';
 dotenv.config();
 
 import Stripe from 'stripe';
-import AppError from '../../errorHelpers/AppError';
-import prisma from '../../../lib/prisma';
+import AppError from '../../errorHelpers/AppError.js';
+import prisma from '../../../lib/prisma.js';
 
 const getStripeClient = () => {
   const stripeSecretKey = process.env.STRIPE_SECRET_KEY;

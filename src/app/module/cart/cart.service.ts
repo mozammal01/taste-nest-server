@@ -1,4 +1,4 @@
-import prisma from "../../../lib/prisma";
+import prisma from "../../../lib/prisma.js";
 
 const addToCart = async (userId: string, payload: { menuItemId: number, quantity?: number }) => {
     const { menuItemId, quantity = 1 } = payload;

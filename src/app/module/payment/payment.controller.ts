@@ -1,6 +1,6 @@
-import catchAsync from "../../utils/catchAsync";
-import sendResponse from "../../utils/sendResponse";
-import { PaymentService } from "./payment.service";
+import catchAsync from "../../utils/catchAsync.js";
+import sendResponse from "../../utils/sendResponse.js";
+import { PaymentService } from "./payment.service.js";
 
 const createPaymentIntent = catchAsync(async (req, res) => {
     const { amount } = req.body;

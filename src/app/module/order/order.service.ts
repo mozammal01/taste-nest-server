@@ -1,4 +1,4 @@
-import prisma from "../../../lib/prisma";
+import prisma from "../../../lib/prisma.js";
 
 const createOrder = async (userId: string, payload: { items: any[], address: string, phone: string, totalAmount: number, transactionId?: string, paymentStatus?: string }) => {
     // 1. Start Transaction

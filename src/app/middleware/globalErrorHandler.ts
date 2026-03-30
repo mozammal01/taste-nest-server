@@ -1,10 +1,10 @@
 import { NextFunction, Request, Response } from 'express';
 import { ZodError } from 'zod';
 import { Prisma } from '@prisma/client';
-import handleZodError from '../errorHelpers/handleZodError';
-import handlePrismaError from '../errorHelpers/handlePrismaError';
-import { TErrorSources } from '../interfaces/error';
-import AppError from '../errorHelpers/AppError';
+import handleZodError from '../errorHelpers/handleZodError.js';
+import handlePrismaError from '../errorHelpers/handlePrismaError.js';
+import { TErrorSources } from '../interfaces/error.js';
+import AppError from '../errorHelpers/AppError.js';
 
 const globalErrorHandler = (
   err: any,

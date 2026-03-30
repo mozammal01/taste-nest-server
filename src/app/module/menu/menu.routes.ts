@@ -1,8 +1,8 @@
 import { Router } from "express";
-import { MenuController } from "./menu.controller";
-import auth from "../../middleware/auth";
-import validateRequest from "../../middleware/validateRequest";
-import { MenuValidations } from "./menu.validation";
+import { MenuController } from "./menu.controller.js";
+import auth from "../../middleware/auth.js";
+import validateRequest from "../../middleware/validateRequest.js";
+import { MenuValidations } from "./menu.validation.js";
 
 const router = Router();
 

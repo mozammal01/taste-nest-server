@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
-import catchAsync from "../../utils/catchAsync";
-import sendResponse from "../../utils/sendResponse";
-import { CartService } from "./cart.service";
+import catchAsync from "../../utils/catchAsync.js";
+import sendResponse from "../../utils/sendResponse.js";
+import { CartService } from "./cart.service.js";
 
 const addToCart = catchAsync(async (req, res) => {
     const userId = (req as any).session.user.id;

@@ -1,6 +1,6 @@
-import catchAsync from "../../utils/catchAsync";
-import sendResponse from "../../utils/sendResponse";
-import { OrderService } from "./order.service";
+import catchAsync from "../../utils/catchAsync.js";
+import sendResponse from "../../utils/sendResponse.js";
+import { OrderService } from "./order.service.js";
 
 const createOrder = catchAsync(async (req, res) => {
     const userId = (req as any).session.user.id;

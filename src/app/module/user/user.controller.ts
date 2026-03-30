@@ -1,8 +1,8 @@
-import catchAsync from "../../utils/catchAsync";
-import sendResponse from "../../utils/sendResponse";
-import { UserService } from "./user.service";
-import pick from "../../utils/pick";
-import { paginationFields } from "../../constants/pagination";
+import catchAsync from "../../utils/catchAsync.js";
+import sendResponse from "../../utils/sendResponse.js";
+import { UserService } from "./user.service.js";
+import pick from "../../utils/pick.js";
+import { paginationFields } from "../../constants/pagination.js";
 
 const getMyProfile = catchAsync(async (req, res) => {
     const userId = (req as any).user.id;

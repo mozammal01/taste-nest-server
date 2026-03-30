@@ -1,4 +1,4 @@
-import prisma from "../../../lib/prisma";
+import prisma from "../../../lib/prisma.js";
 
 const createReservation = async (userId: string, payload: any) => {
     const result = await prisma.reservation.create({

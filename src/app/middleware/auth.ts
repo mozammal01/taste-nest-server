@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from "express";
-import AppError from "../errorHelpers/AppError";
-import catchAsync from "../utils/catchAsync";
+import AppError from "../errorHelpers/AppError.js";
+import catchAsync from "../utils/catchAsync.js";
 
 const authMiddleware = (...requiredRoles: string[]) => {
     return catchAsync(async (req: Request, res: Response, next: NextFunction) => {
