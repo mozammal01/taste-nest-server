@@ -10,6 +10,9 @@ export const auth = betterAuth({
     database: prismaAdapter(prisma, {
         provider: "postgresql",
     }),
+    onNodeInit: async () => {
+        console.log("[auth]: Better Auth Node Initialized");
+    },
     emailAndPassword: {
         enabled: true,
         requireEmailVerification: true,
