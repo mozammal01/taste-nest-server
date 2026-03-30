@@ -1,15 +1,17 @@
 {
   "version": 2,
-  "builds": [
+  "cleanUrls": true,
+  "trailingSlash": false,
+  "rewrites": [
     {
-      "src": "dist/server.js",
-      "use": "@vercel/node"
+      "source": "/(.*)",
+      "destination": "/api/index"
     }
   ],
-  "routes": [
-    {
-      "src": "/(.*)",
-      "dest": "dist/server.js"
+  "functions": {
+    "api/index.ts": {
+      "memory": 1024,
+      "maxDuration": 25
     }
-  ]
+  }
 }
