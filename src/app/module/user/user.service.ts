@@ -28,9 +28,7 @@ const updateMyProfile = async (id: string, payload: any) => {
 }
 
 const updateUser = async (currentUserId: string, targetUserId: string, payload: any) => {
-    // If the payload contains a role change
     if (payload.role) {
-        // Fetch target user to check their current role
         const targetUser = await prisma.user.findUnique({
             where: { id: targetUserId },
             select: { role: true }
@@ -40,9 +38,6 @@ const updateUser = async (currentUserId: string, targetUserId: string, payload: 
             throw new AppError(404, "Target user not found");
         }
 
-        // 'ekjon admin arekjon admin er role change korte parbe na'
-        // If target user is an admin, and the current user is an admin (which is true since only admins can call this),
-        // and they are not updating their own profile
         if (targetUser.role === 'admin' && currentUserId !== targetUserId) {
             throw new AppError(403, "You cannot change the role of another admin.");
         }
@@ -67,9 +62,7 @@ const deleteUser = async (id: string, force: boolean = false) => {
         throw new AppError(404, "User not found");
     }
 
-    // Check if user has orders and force is not provided
     if (userWithOrders.orders.length > 0 && !force) {
-        // Return a special error message so frontend can show confirmation modal
         throw new AppError(400, "USER_HAS_ORDERS");
     }
 
