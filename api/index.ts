@@ -1,4 +1,4 @@
-import app from "../src/app";
+import app from "../dist/app.js";
 
 export default async function handler(req: any, res: any) {
     try {
@@ -7,9 +7,8 @@ export default async function handler(req: any, res: any) {
         console.error("VERCEL STARTUP CRASH:", error);
         res.status(500).json({
             success: false,
-            message: "Server failed to start !!",
-            error: error?.message || error,
-            stack: error?.stack 
+            message: "Critical Error: Server failed to start !!",
+            error: error?.message || error
         });
     }
 }

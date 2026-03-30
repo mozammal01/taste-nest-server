@@ -1,7 +1,6 @@
 {
   "name": "tastenest-server",
   "version": "1.0.0",
-  "type": "module",
   "description": "Backend server for TasteNest",
   "main": "dist/server.js",
   "scripts": {
