@@ -1,4 +1,4 @@
-import prisma from "../../../lib/prisma";
+import prisma from "../../../lib/prisma.js";
 
 const addPoints = async (userId: string, points: number, description: string) => {
     return await prisma.reward.create({

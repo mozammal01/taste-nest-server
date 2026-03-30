@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
-import { FavoriteService } from "./favorite.service";
-import catchAsync from "../../utils/catchAsync";
-import sendResponse from "../../utils/sendResponse";
+import { FavoriteService } from "./favorite.service.js";
+import catchAsync from "../../utils/catchAsync.js";
+import sendResponse from "../../utils/sendResponse.js";
 
 const toggleFavorite = catchAsync(async (req: Request, res: Response) => {
     const user = (req as any).user;

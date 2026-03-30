@@ -1,4 +1,4 @@
-import prisma from "../../../lib/prisma";
+import prisma from "../../../lib/prisma.js";
 
 const toggleFavorite = async (userId: string, menuItemId: number) => {
     const existing = await prisma.favorite.findUnique({

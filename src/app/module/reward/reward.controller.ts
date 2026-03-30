@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
-import { RewardService } from "./reward.service";
-import catchAsync from "../../utils/catchAsync";
-import sendResponse from "../../utils/sendResponse";
+import { RewardService } from "./reward.service.js";
+import catchAsync from "../../utils/catchAsync.js";
+import sendResponse from "../../utils/sendResponse.js";
 
 const getMyRewards = catchAsync(async (req: Request, res: Response) => {
     const user = (req as any).user;

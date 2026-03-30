@@ -1,8 +1,8 @@
 import { Router } from "express";
-import auth from "../../middleware/auth";
-import { uploadImage } from "../../config/multer";
-import AppError from "../../errorHelpers/AppError";
-import catchAsync from "../../utils/catchAsync";
+import auth from "../../middleware/auth.js";
+import { uploadImage } from "../../config/multer.js";
+import AppError from "../../errorHelpers/AppError.js";
+import catchAsync from "../../utils/catchAsync.js";
 
 const router = Router();
 
