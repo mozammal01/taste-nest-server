@@ -1,11 +1,13 @@
 import { NextFunction, Request, Response } from "express";
-import { auth as betterAuth } from "../../lib/auth";
 import AppError from "../errorHelpers/AppError";
 import catchAsync from "../utils/catchAsync";
 
-const auth = (...requiredRoles: string[]) => {
+const authMiddleware = (...requiredRoles: string[]) => {
     return catchAsync(async (req: Request, res: Response, next: NextFunction) => {
         try {
+            // Lazy load auth to avoid ESM/CJS conflict
+            const { auth: betterAuth } = await import("../../lib/auth.js");
+            
             const session = await betterAuth.api.getSession({
                 headers: new Headers(req.headers as any)
             });
@@ -33,4 +35,4 @@ const auth = (...requiredRoles: string[]) => {
     });
 };
 
-export default auth;
+export default authMiddleware;

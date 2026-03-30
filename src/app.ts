@@ -1,7 +1,5 @@
 import express, { Application, Request, Response } from 'express';
 import cors from 'cors';
-import { toNodeHandler } from "better-auth/node";
-import { auth } from "./lib/auth";
 import router from './app/routes';
 import globalErrorHandler from './app/middleware/globalErrorHandler';
 import notFound from './app/middleware/notFound';
@@ -17,14 +15,14 @@ console.log("[server]: Initializing TasteNest Engine...");
 
 const limiter = rateLimit({
 	windowMs: 15 * 60 * 1000, // 15 minutes
-	limit: 1000, // Increased limit for development/heavy usage
+	limit: 1000, 
 	standardHeaders: 'draft-7', 
 	legacyHeaders: false, 
     message: "Too many requests from this IP, please try again after 15 minutes"
 });
 
 app.use(helmet({
-    contentSecurityPolicy: false, // Relax for cross-origin if needed
+    contentSecurityPolicy: false,
     crossOriginResourcePolicy: { policy: "cross-origin" }
 }));
 app.use(limiter);
@@ -40,13 +38,17 @@ app.use(
     credentials: true,
   })
 );
-// Better Auth Route (Registered BEFORE JSON parser to avoid issues with body parsing in social/POST requests)
-app.all("/api/auth/*", (req, res, next) => {
-    console.log(`[auth]: Incoming request ${req.method} ${req.url}`);
-    toNodeHandler(auth)(req, res).catch((err) => {
-        console.error("BETTER AUTH ERROR:", err);
+
+// Better Auth Route (Dynamic import to avoid ERR_REQUIRE_ESM)
+app.all("/api/auth/*", async (req, res, next) => {
+    try {
+        const { toNodeHandler } = await import("better-auth/node");
+        const { auth } = await import("./lib/auth.js"); 
+        return toNodeHandler(auth)(req, res);
+    } catch (err) {
+        console.error("BETTER AUTH DYNAMIC ERROR:", err);
         next(err);
-    });
+    }
 });
 
 app.use(express.json());
