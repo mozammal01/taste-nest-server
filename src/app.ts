@@ -22,7 +22,13 @@ app.use(helmet());
 app.use(limiter);
 app.use(
   cors({
-    origin: process.env.CLIENT_URL,
+    origin: [
+        "http://localhost:3000",
+        "http://localhost:3001",
+        "http://localhost:3002",
+        "https://taste-nest-restaurent.vercel.app",
+        process.env.CLIENT_URL as string
+    ].filter(Boolean),
     credentials: true,
   })
 );
