@@ -12,6 +12,7 @@ const globalErrorHandler = (
   res: Response,
   next: NextFunction
 ) => {
+  console.error("BACKEND ERROR:", err);
   let statusCode = 500;
   let message = 'Something went wrong!';
   let errorSources: TErrorSources = [

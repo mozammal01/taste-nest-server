@@ -18,7 +18,14 @@ const getMyProfile = catchAsync(async (req, res) => {
 
 const updateMyProfile = catchAsync(async (req, res) => {
     const userId = (req as any).user.id;
-    const result = await UserService.updateMyProfile(userId, req.body);
+    const payload = req.body;
+    
+    // Add image URL to payload if a file was uploaded
+    if (req.file) {
+        payload.image = (req.file as any).path;
+    }
+    
+    const result = await UserService.updateMyProfile(userId, payload);
 
     sendResponse(res, {
         statusCode: 200,
