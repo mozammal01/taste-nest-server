@@ -1,20 +1,22 @@
 import express, { Application, Request, Response } from 'express';
 import cors from 'cors';
-import router from './app/routes';
-import globalErrorHandler from './app/middleware/globalErrorHandler';
-import notFound from './app/middleware/notFound';
+import router from './app/routes/index.js';
+import globalErrorHandler from './app/middleware/globalErrorHandler.js';
+import notFound from './app/middleware/notFound.js';
 import helmet from 'helmet';
 import { rateLimit } from 'express-rate-limit';
+import { toNodeHandler } from "better-auth/node";
+import { auth } from "./lib/auth.js";
 
 const app: Application = express();
 
 app.set('trust proxy', 1);
 
 // Diagnostic logging for Vercel cold starts
-console.log("[server]: Initializing TasteNest Engine...");
+console.log("[server]: Initializing TasteNest Engine (ESM Mode)...");
 
 const limiter = rateLimit({
-	windowMs: 15 * 60 * 1000, // 15 minutes
+	windowMs: 15 * 60 * 1000, 
 	limit: 1000, 
 	standardHeaders: 'draft-7', 
 	legacyHeaders: false, 
@@ -39,16 +41,9 @@ app.use(
   })
 );
 
-// Better Auth Route (Dynamic import to avoid ERR_REQUIRE_ESM)
-app.all("/api/auth/*", async (req, res, next) => {
-    try {
-        const { toNodeHandler } = await import("better-auth/node");
-        const { auth } = await import("./lib/auth.js"); 
-        return toNodeHandler(auth)(req, res);
-    } catch (err) {
-        console.error("BETTER AUTH DYNAMIC ERROR:", err);
-        next(err);
-    }
+// Better Auth Route (Standard import now that we have ESM enabled)
+app.all("/api/auth/*", (req, res, next) => {
+    return toNodeHandler(auth)(req, res);
 });
 
 app.use(express.json());

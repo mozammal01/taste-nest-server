@@ -1,15 +1,14 @@
 import { Router } from "express";
-import { MenuRoutes } from "../module/menu/menu.routes";
-import { CartRoutes } from "../module/cart/cart.routes";
-import { OrderRoutes } from "../module/order/order.routes";
-
-import { UserRoutes } from "../module/user/user.routes";
-import { PaymentRoutes } from "../module/payment/payment.routes";
-import { AdminRoutes } from "../module/admin/admin.routes";
-import { UploadRoutes } from "../module/upload/upload.routes";
-import { ReservationRoutes } from "../module/reservation/reservation.routes";
-import { FavoriteRoutes } from "../module/favorite/favorite.routes";
-import { RewardRoutes } from "../module/reward/reward.routes";
+import { MenuRoutes } from "../module/menu/menu.routes.js";
+import { CartRoutes } from "../module/cart/cart.routes.js";
+import { OrderRoutes } from "../module/order/order.routes.js";
+import { UserRoutes } from "../module/user/user.routes.js";
+import { PaymentRoutes } from "../module/payment/payment.routes.js";
+import { AdminRoutes } from "../module/admin/admin.routes.js";
+import { UploadRoutes } from "../module/upload/upload.routes.js";
+import { ReservationRoutes } from "../module/reservation/reservation.routes.js";
+import { FavoriteRoutes } from "../module/favorite/favorite.routes.js";
+import { RewardRoutes } from "../module/reward/reward.routes.js";
 
 const router = Router();
 
