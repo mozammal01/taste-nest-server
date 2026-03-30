@@ -51,7 +51,8 @@ const getAllUsers = catchAsync(async (req, res) => {
 
 const updateUser = catchAsync(async (req, res) => {
     const userId = req.params.id;
-    const result = await UserService.updateUser(userId, req.body);
+    const currentUserId = (req as any).user.id;
+    const result = await UserService.updateUser(currentUserId, userId, req.body);
 
     sendResponse(res, {
         statusCode: 200,
@@ -63,7 +64,8 @@ const updateUser = catchAsync(async (req, res) => {
 
 const deleteUser = catchAsync(async (req, res) => {
     const userId = req.params.id;
-    const result = await UserService.deleteUser(userId);
+    const force = req.query.force === 'true';
+    const result = await UserService.deleteUser(userId, force);
 
     sendResponse(res, {
         statusCode: 200,

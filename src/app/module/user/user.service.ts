@@ -1,4 +1,5 @@
 import prisma from "../../../lib/prisma.js";
+import AppError from "../../errorHelpers/AppError.js";
 
 const getMyProfile = async (id: string) => {
     const result = await prisma.user.findUnique({
@@ -26,18 +27,71 @@ const updateMyProfile = async (id: string, payload: any) => {
     return result;
 }
 
-const updateUser = async (id: string, payload: any) => {
+const updateUser = async (currentUserId: string, targetUserId: string, payload: any) => {
+    // If the payload contains a role change
+    if (payload.role) {
+        // Fetch target user to check their current role
+        const targetUser = await prisma.user.findUnique({
+            where: { id: targetUserId },
+            select: { role: true }
+        });
+
+        if (!targetUser) {
+            throw new AppError(404, "Target user not found");
+        }
+
+        // 'ekjon admin arekjon admin er role change korte parbe na'
+        // If target user is an admin, and the current user is an admin (which is true since only admins can call this),
+        // and they are not updating their own profile
+        if (targetUser.role === 'admin' && currentUserId !== targetUserId) {
+            throw new AppError(403, "You cannot change the role of another admin.");
+        }
+    }
+
     const result = await prisma.user.update({
-        where: { id },
+        where: { id: targetUserId },
         data: payload
     });
     return result;
 }
 
-const deleteUser = async (id: string) => {
-    const result = await prisma.user.delete({
-        where: { id }
+const deleteUser = async (id: string, force: boolean = false) => {
+    const userWithOrders = await prisma.user.findUnique({
+        where: { id },
+        include: {
+            orders: true
+        }
     });
+
+    if (!userWithOrders) {
+        throw new AppError(404, "User not found");
+    }
+
+    // Check if user has orders and force is not provided
+    if (userWithOrders.orders.length > 0 && !force) {
+        // Return a special error message so frontend can show confirmation modal
+        throw new AppError(400, "USER_HAS_ORDERS");
+    }
+
+    const result = await prisma.$transaction(async (tx) => {
+        const orderIds = userWithOrders.orders.map(o => o.id);
+
+        if (orderIds.length > 0) {
+            await tx.payment.deleteMany({ where: { orderId: { in: orderIds } } });
+            await tx.orderItem.deleteMany({ where: { orderId: { in: orderIds } } });
+        }
+
+        await tx.order.deleteMany({ where: { userId: id } });
+        await tx.reservation.deleteMany({ where: { userId: id } });
+        await tx.favorite.deleteMany({ where: { userId: id } });
+        await tx.reward.deleteMany({ where: { userId: id } });
+        await tx.cart.deleteMany({ where: { userId: id } });
+
+        return await tx.user.delete({
+            where: { id }
+        });
+    });
+
     return result;
 }
 
