@@ -18,8 +18,14 @@ const authMiddleware = (...requiredRoles: string[]) => {
 
             const user = session.user;
 
-            if (requiredRoles.length && !requiredRoles.includes((user as any).role)) {
-                throw new AppError(403, "You have no permission to access this route!");
+            if (requiredRoles.length) {
+                const hasRole = requiredRoles.includes((user as any).role);
+                const isSuperAdmin = (user as any).role === "super_admin";
+                const isAdminAllowed = requiredRoles.includes("admin") && isSuperAdmin;
+                
+                if (!hasRole && !isAdminAllowed) {
+                    throw new AppError(403, "You have no permission to access this route!");
+                }
             }
 
             (req as any).user = user;

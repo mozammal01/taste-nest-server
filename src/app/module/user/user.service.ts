@@ -27,7 +27,7 @@ const updateMyProfile = async (id: string, payload: any) => {
     return result;
 }
 
-const updateUser = async (currentUserId: string, targetUserId: string, payload: any) => {
+const updateUser = async (currentUser: any, targetUserId: string, payload: any) => {
     if (payload.role) {
         const targetUser = await prisma.user.findUnique({
             where: { id: targetUserId },
@@ -38,8 +38,22 @@ const updateUser = async (currentUserId: string, targetUserId: string, payload: 
             throw new AppError(404, "Target user not found");
         }
 
-        if (targetUser.role === 'admin' && currentUserId !== targetUserId) {
-            throw new AppError(403, "You cannot change the role of another admin.");
+        const isSuperAdmin = currentUser.role === "super_admin";
+        
+        // Non-super-admins cannot change the role of an admin (including themselves)
+        // or promote someone to admin or super_admin
+        if (!isSuperAdmin) {
+            if (targetUser.role === 'admin' || targetUser.role === 'super_admin') {
+                throw new AppError(403, "Only a Super Admin can modify an Admin's role.");
+            }
+            if (payload.role === 'admin' || payload.role === 'super_admin') {
+                throw new AppError(403, "Only a Super Admin can grant Admin privileges.");
+            }
+        }
+        
+        // Even super_admin cannot demote themselves accidentally via this route
+        if (isSuperAdmin && currentUser.id === targetUserId && payload.role !== 'super_admin') {
+            throw new AppError(403, "Super Admin cannot demote themselves.");
         }
     }
 
@@ -50,7 +64,7 @@ const updateUser = async (currentUserId: string, targetUserId: string, payload: 
     return result;
 }
 
-const deleteUser = async (id: string, force: boolean = false) => {
+const deleteUser = async (currentUser: any, id: string, force: boolean = false) => {
     const userWithOrders = await prisma.user.findUnique({
         where: { id },
         include: {
@@ -60,6 +74,14 @@ const deleteUser = async (id: string, force: boolean = false) => {
 
     if (!userWithOrders) {
         throw new AppError(404, "User not found");
+    }
+
+    // Role protection
+    const isSuperAdmin = currentUser.role === "super_admin";
+    if (!isSuperAdmin) {
+        if (userWithOrders.role === 'admin' || userWithOrders.role === 'super_admin') {
+            throw new AppError(403, "Only a Super Admin can delete an Admin.");
+        }
     }
 
     if (userWithOrders.orders.length > 0 && !force) {
