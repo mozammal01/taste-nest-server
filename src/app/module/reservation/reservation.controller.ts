@@ -37,8 +37,32 @@ const cancelReservation = catchAsync(async (req: Request, res: Response) => {
     });
 });
 
+const getAllReservations = catchAsync(async (req: Request, res: Response) => {
+    const result = await ReservationService.getAllReservations();
+    sendResponse(res, {
+        statusCode: 200,
+        success: true,
+        message: "All reservations fetched successfully",
+        data: result
+    });
+});
+
+const updateReservationStatus = catchAsync(async (req: Request, res: Response) => {
+    const { id } = req.params;
+    const { status } = req.body;
+    const result = await ReservationService.updateReservationStatus(Number(id), status);
+    sendResponse(res, {
+        statusCode: 200,
+        success: true,
+        message: "Reservation status updated successfully",
+        data: result
+    });
+});
+
 export const ReservationController = {
     createReservation,
     getMyReservations,
-    cancelReservation
+    cancelReservation,
+    getAllReservations,
+    updateReservationStatus
 }

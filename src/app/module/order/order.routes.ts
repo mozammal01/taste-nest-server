@@ -13,7 +13,7 @@ router.post(
   OrderController.createOrder
 );
 router.get("/my-orders", auth(), OrderController.getMyOrders);
-router.get("/", auth("admin"), OrderController.getAllOrders);
-router.patch("/:id", auth("admin"), OrderController.updateOrderStatus);
+router.get("/", auth("admin", "manager"), OrderController.getAllOrders);
+router.patch("/:id", auth("admin", "manager"), OrderController.updateOrderStatus);
 
 export const OrderRoutes = router;
